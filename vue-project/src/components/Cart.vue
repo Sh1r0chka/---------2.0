@@ -1,18 +1,30 @@
+<script setip>
+    defineProps({
+        title: String,
+        imageUrl: String,
+        price: Number,
+        isFavorite: Boolean,
+        isAdded: Boolean,
+        onClickAdd: Function,
+        onClickFavorite: Function
+    })
+</script>
+
 <template>
 
     <div class="relative bg-white border border-slate-100 rounded-3xl p-8 cursor-pointer transition hover:-translate-y-2 hover:shadow-xl">
-        <img src="/like-1.svg" alt="like 1" class="absolute top-8 left-8" />
-        <img src="/sneakers/sneakers-1.jpg" alt="Кроссовки" />
+        <img @click="onClickFavorite" :src="!isFavorite ? '/like-1.svg' : '/like-2.svg'" alt="like" class="absolute top-8 left-8">
+        <img :src="imageUrl" alt="Кроссовки" />
         
         <p class="mt-2">Мужские Кроссовки Nike Blazzer Mid Suede</p>
 
         <div class="flex justify-between mt-5">
             <div class="flex flex-col">
             <span class="text-slate-400">Цена:</span>
-            <b>12999 руб.</b>
+            <span class="font-bold">{{ price }} руб.</span>
             </div>
 
-            <img src="/plus.svg" alt="plus">
+            <img @click="onClickAdd" :src="!isAdded ? '/plus.svg' : '/checked.svg'" alt="plus">
         </div>
     </div>
 
