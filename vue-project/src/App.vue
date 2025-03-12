@@ -24,7 +24,7 @@
           </div>
         </div>
 
-        <Cartlist />
+        <Cartlist :items="items" />
       </div>
     </div>
   </div>

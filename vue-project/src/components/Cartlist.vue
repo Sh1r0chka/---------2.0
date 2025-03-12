@@ -1,6 +1,10 @@
 <script setup>
     import Cart from './Card.vue'
     
+    defineProps({
+        items: Array
+    })
+
     const onClickAdd = () => {
         alert('Добавить')
     }
@@ -11,9 +15,11 @@
 
     <div class="grid grid-cols-4 gap-5">
         <Cart 
-            title="Мужские Кроссовки Nike Blazzer Mid Suede" 
-            imageUrl="/sneakers/sneaker-1.jpg" 
-            :price="12999"/>
+            v-for="item in items"
+            v-key="item.id"
+            :title="item.title" 
+            :imageUrl="item.imageUrl" 
+            :price="item.price"/>
             :onClickAdd="onClickAdd"
         <Cart />
         <Cart />
