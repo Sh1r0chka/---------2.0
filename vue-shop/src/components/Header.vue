@@ -3,8 +3,8 @@
         <div class="flex item-center gap-4">
             <img src="/logo.png" alt="logo" class="w-12 h-13" />
             <div>
-                <h2 class="text-xl font-bold uppercase">VUE КЕДЫ</h2>
-                <p class="text-slate-400">Магазин лучших кроссовок</p>
+                <h2 class="text-xl font-bold uppercase">MIKU SHOP</h2>
+                <p class="text-slate-400">Магазин мерча Мику</p>
             </div>
         </div>
 
