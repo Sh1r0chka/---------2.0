@@ -7,6 +7,71 @@ import CartList from './components/CartList.vue';
 
 const items = ref([]);
 
+const filters = reactive({
+  sortBy: 'title',
+  searchQuery: ''
+})
+
+const onChangeSelect = (event) => {
+  filters.sortBy = event.target.value
+}
+
+const onChangeSearchInput = (event) => {
+  filters.searchQuery = event.target.value
+}
+
+const fetchFavorites = async () => {
+  try {
+    const { data:favorites } = await axios.get('https://a45c28cb6fcb8ca4.mokky.dev/favorites')
+
+    items.value = items.value.map(item =>{
+      const favorite = favorites.find(favorite => favorite.id === item.id)
+
+      if (!favorite) {
+        return item;
+      }
+
+      return {
+        ...item,
+        isFavorite: true,
+        favoriteId: favorite.id,
+      }
+
+    })
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+const fetchItems = async () => {
+  try {
+    const params = {
+      sortBy: filters.sortBy
+    }
+
+    if (filters.searchQuery) {
+      params.title = `*${filters.searchQuery}*`
+    }
+
+    const { data } = await axios.get('https://a45c28cb6fcb8ca4.mokky.dev/items', {
+      params
+    })
+
+    items.value = data.map(obj => ({
+      ...obj,
+      isFavorite: false,
+      isAdded: false
+    }));
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+// onMounted(async () => {
+  await fetchItems();
+  await fetchFavorites();
+// }
+
 onMounted(async () => {
   console.log('onMounted hook triggered');
   try {
@@ -18,6 +83,7 @@ onMounted(async () => {
     console.error('Error fetching data:', err);
   }
 });
+
 </script>
 
 <template>
