@@ -1,5 +1,7 @@
 <script setup>
-    defineProps({
+import { inject } from 'vue';
+
+    const props = defineProps({
         id: Number,
         title: String,
         imageUrl: String,
@@ -9,6 +11,18 @@
         onClickFavorite: Function,
         onClickAdd: Function
     })
+
+const addToFavorite = inject('addToFavorite')
+
+const onClickFavorite = () => {
+    const obj = {
+        ...props,
+        parent: props.id,
+    }
+
+    addToFavorite(obj)
+} 
+
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, provide, reactive, ref, watch } from 'vue';
 import axios from 'axios';
 
 import Header from './components/Header.vue';
@@ -24,7 +24,7 @@ const fetchFavorites = async () => {
   try {
     const { data:favorites } = await axios.get('https://a45c28cb6fcb8ca4.mokky.dev/favorites')
 
-    items.value = items.value.map(item =>{
+    favorites.value = favorites.value.map(item =>{
       const favorite = favorites.find(favorite => favorite.id === item.id)
 
       if (!favorite) {
@@ -43,6 +43,11 @@ const fetchFavorites = async () => {
   }
 }
 
+const addToFavorite = async (item) => {
+  item.isFavorite = true
+  console.log(item)
+}
+
 const fetchItems = async () => {
   try {
     const params = {
@@ -53,7 +58,7 @@ const fetchItems = async () => {
       params.title = `*${filters.searchQuery}*`
     }
 
-    const { data } = await axios.get('https://a45c28cb6fcb8ca4.mokky.dev/items', {
+    const { data } = await axios.get(`https://a45c28cb6fcb8ca4.mokky.dev/items?title=*${filters.searchQuery}*&sortBy=${filters.sortBy}`, {
       params
     })
 
@@ -67,22 +72,13 @@ const fetchItems = async () => {
   }
 }
 
-// onMounted(async () => {
-  await fetchItems();
-  await fetchFavorites();
-// }
-
 onMounted(async () => {
-  console.log('onMounted hook triggered');
-  try {
-    console.log('Fetching data from API...');
-    const { data } = await axios.get('https://a45c28cb6fcb8ca4.mokky.dev/items');
-    console.log('Data received:', data);
-    items.value = data;
-  } catch (err) {
-    console.error('Error fetching data:', err);
-  }
-});
+  await fetchItems()
+  await fetchFavorites()
+})
+watch(filters, fetchItems)
+
+provide('addToFavorite', addToFavorite);
 
 </script>
 
@@ -95,7 +91,7 @@ onMounted(async () => {
         <h2 class="text-3xl font-bold mb-8">Все товары</h2>
 
         <div class="flex gap-4">
-          <select class="py-2 px-3 border rounded-md outline-none">
+          <select @change="onChangeSelect"  class="py-2 px-3 border rounded-md outline-none">
             <option>По названию</option>
             <option>По цене (Дешёвые)</option>
             <option>По цене (Дорогие)</option>
@@ -103,7 +99,7 @@ onMounted(async () => {
 
           <div class="relative">
             <img class="absolute left-4 top-3" src="/search.svg" alt="search">
-            <input class="border rounded-md py-2 pl-11 pr-4 outline-none focus:border-gray-400" type="text" placeholder="Поиск..." />
+            <input @input="onChangeSearchInput" class="border rounded-md py-2 pl-11 pr-4 outline-none focus:border-gray-400" type="text" placeholder="Поиск..." />
           </div>
         </div>
       </div>
